@@ -1,6 +1,7 @@
 import * as React from "react";
-
 import {Flower} from "../../model/Flower";
+import {Incubator} from "../../model/Incubator";
+import {Incubators} from "../Incubators";
 import {Storage} from "../Storage";
 
 export class Game extends React.Component<Props, State> {
@@ -9,13 +10,15 @@ export class Game extends React.Component<Props, State> {
 		super(props, context);
 		this.state = {
 			flowers: [],
-			storageSize: 6
+			storageSize: 6,
+			incubators: [{}, {}]
 		};
 	}
 
 	public render(): JSX.Element {
 		return (
 			<div>
+				<Incubators incubators={this.state.incubators}/>
 				<Storage size={this.state.storageSize} flowers={this.state.flowers}/>
 				<button onClick={this.addFlower}>Add flower</button>
 			</div>
@@ -33,6 +36,8 @@ interface Props {
 
 }
 interface State {
+	incubators?: Incubator[];
+
 	flowers?: Flower[];
 	storageSize?: number;
 }
