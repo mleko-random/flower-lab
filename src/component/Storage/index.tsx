@@ -1,6 +1,7 @@
 import * as React from "react";
-import {StorageSlot} from "../StorageSlot/index";
-import {Flower} from "../../model/Flower/index";
+
+import {Flower} from "../../model/Flower";
+import {StorageSlot} from "../StorageSlot";
 
 export class Storage extends React.Component<Props, State> {
 	public render(): JSX.Element {
@@ -15,7 +16,7 @@ export class Storage extends React.Component<Props, State> {
 		const slots = [];
 		const flowers = this.props.flowers;
 		for (let i = 0; i < this.props.size; i++) {
-			slots.push(<StorageSlot flower={flowers.length > i ? flowers[i] : null}/>);
+			slots.push(<StorageSlot key={i} flower={flowers.length > i ? flowers[i] : null}/>);
 		}
 		return slots;
 	}

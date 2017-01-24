@@ -1,6 +1,7 @@
 import * as React from "react";
-import {Storage} from "../Storage/index";
-import {Flower} from "../../model/Flower/index";
+
+import {Flower} from "../../model/Flower";
+import {Storage} from "../Storage";
 
 export class Game extends React.Component<Props, State> {
 
@@ -23,7 +24,7 @@ export class Game extends React.Component<Props, State> {
 
 	private addFlower = () => {
 		if (this.state.storageSize <= this.state.flowers.length)return;
-		const newFlower: Flower = {color: "blue"};
+		const newFlower: Flower = {color: "white"};
 		this.setState({flowers: this.state.flowers.concat(newFlower)});
 	}
 }

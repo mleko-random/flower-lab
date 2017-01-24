@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Flower as FlowerModel} from "../../model/Flower/index";
+import {Flower as FlowerModel} from "../../model/Flower";
 
 export class Flower extends React.Component<Props, State> {
 	public render(): JSX.Element {
