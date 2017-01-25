@@ -4,13 +4,14 @@ import {Incubator} from "../../model/Incubator";
 import {Incubators} from "../Incubators";
 import {Storage} from "../Storage";
 
-export class Game extends React.Component<Props, State> {
+export class Game extends React.Component<void, State> {
 
-	constructor(props: Props, context: any) {
+	constructor(props: void, context: any) {
 		super(props, context);
 		this.state = {
 			flowers: [],
 			storageSize: 6,
+			selectedStorageSlot: null,
 			incubators: [{}, {}]
 		};
 	}
@@ -19,7 +20,12 @@ export class Game extends React.Component<Props, State> {
 		return (
 			<div>
 				<Incubators incubators={this.state.incubators}/>
-				<Storage size={this.state.storageSize} flowers={this.state.flowers}/>
+				<Storage
+					size={this.state.storageSize}
+					flowers={this.state.flowers}
+					selectedSlot={this.state.selectedStorageSlot}
+					onSelectSlot={this.selectStorageSlot}
+				/>
 				<button onClick={this.addFlower}>Add flower</button>
 			</div>
 		);
@@ -30,14 +36,16 @@ export class Game extends React.Component<Props, State> {
 		const newFlower: Flower = {color: "white"};
 		this.setState({flowers: this.state.flowers.concat(newFlower)});
 	}
+
+	private selectStorageSlot = (id: number) => {
+		this.setState({selectedStorageSlot: id});
+	}
 }
 
-interface Props {
-
-}
 interface State {
 	incubators?: Incubator[];
 
 	flowers?: Flower[];
 	storageSize?: number;
+	selectedStorageSlot?: number;
 }
