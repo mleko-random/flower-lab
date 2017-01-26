@@ -21,9 +21,9 @@ export class Storage extends React.Component<Props, State> {
 			slots.push(
 				<div
 					style={{border: this.props.selectedSlot === i ? "2px black dashed" : "2px transparent solid", display: "inline-block"}}
+					key={i}
 				>
 					<FlowerSlot
-						key={i}
 						flower={flowers.length > i ? flowers[i] : null}
 						onClick={this.slotClickHandler(i)}
 					/>
