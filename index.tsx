@@ -1,6 +1,9 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
-import {Game} from "./src/component/Game/index";
+
+import "es6-shim";
+
+import {Game} from "./src/component/Game";
 
 // Render a simple React component into the body.
 let element = document.createElement("div");

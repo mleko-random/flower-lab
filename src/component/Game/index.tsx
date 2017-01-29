@@ -1,7 +1,6 @@
 import * as React from "react";
-
-import {replace} from "typescript-array-utils";
-import {shallowMerge} from "typescript-object-utils";
+import {replace, without} from "typescript-array-utils";
+import {mergeNested} from "typescript-object-utils/src/mergeNested";
 
 import {Flower} from "../../model/Flower";
 import {Incubator, slotName} from "../../model/Incubator";
@@ -40,7 +39,12 @@ export class Game extends React.Component<void, State> {
 
 	private addFlower = () => {
 		if (this.state.storageSize <= this.state.flowers.length)return;
-		const newFlower: Flower = {color: "white"};
+
+		const colors = [
+			"white", "blue", "red", "yellow", "green"
+		];
+
+		const newFlower: Flower = {color: colors[Math.floor(Math.random() * colors.length)]};
 		this.setState({flowers: this.state.flowers.concat(newFlower)});
 	}
 
@@ -48,13 +52,24 @@ export class Game extends React.Component<void, State> {
 		this.setState({selectedStorageSlot: id});
 	}
 
-	private incubatorSlotClick = (i: number, slot: slotName) => {
+	private incubatorSlotClick = (incubatorId: number, slot: slotName) => {
 		let state = this.state;
-		if (state.selectedStorageSlot != null && state.flowers[state.selectedStorageSlot]) {
-			const flower = state.flowers[state.selectedStorageSlot];
+		let selectedStorageSlot = state.selectedStorageSlot;
+		if (selectedStorageSlot != null && state.flowers[selectedStorageSlot]) {
+			const flower = state.flowers[selectedStorageSlot];
 			const incubators = state.incubators;
-			let mergedIncubator = shallowMerge(incubators[i], {slots: shallowMerge(incubators[i].slots, {[slot]: flower})});
-			this.setState({incubators: replace(incubators, i, mergedIncubator)});
+
+			let selectedIncubator = incubators[incubatorId];
+			let flowerInSelectedSlot = selectedIncubator.slots[slot];
+
+			let updatedStorage = without(state.flowers, selectedStorageSlot);
+			if (flowerInSelectedSlot) {
+				updatedStorage = updatedStorage.concat(flowerInSelectedSlot);
+			}
+			this.setState({
+				incubators: replace(incubators, incubatorId, mergeNested(selectedIncubator, {slots: {[slot]: flower}})),
+				flowers: updatedStorage
+			});
 		}
 	}
 }
