@@ -8,7 +8,7 @@ export class Flower extends React.Component<Props, State> {
 			height: "100%"
 		};
 		return (
-			<FlowerSVG style={style} color={this.props.flower.color}/>
+			<FlowerSVG style={style} petalColors={this.props.flower.colors}/>
 		);
 	}
 }

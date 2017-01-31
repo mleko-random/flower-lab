@@ -20,10 +20,10 @@ export class Incubator extends React.Component<Props, State> {
 
 	private slotAClick = () => {
 		this.slotClick("A");
-	}
+	};
 	private slotBClick = () => {
 		this.slotClick("B");
-	}
+	};
 
 	private slotClick(slot: slotName) {
 		if (this.props.onSlotClick) this.props.onSlotClick(slot);

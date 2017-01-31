@@ -19,7 +19,7 @@
     "tslint-react": "^2.0.0",
     "typescript": "^2.0.0",
     "typescript-array-utils": "^0.1.0",
-    "typescript-object-utils": "^0.1.1",
+    "typescript-object-utils": "^0.2.1",
     "webpack": "^2.2.0",
     "webpack-dev-server": "^2.2.0"
   }

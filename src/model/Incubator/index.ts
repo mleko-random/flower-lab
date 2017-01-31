@@ -1,8 +1,8 @@
-import {Flower} from "../Flower";
+import {Specimen} from "../Specimen/index";
 export interface Incubator {
 	slots: {
-		A?: Flower;
-		B?: Flower;
+		A?: Specimen;
+		B?: Specimen;
 	};
 }
 

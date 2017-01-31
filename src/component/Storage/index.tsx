@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Flower} from "../../model/Flower";
+import {Specimen} from "../../model/Specimen";
 import {FlowerSlot} from "../FlowerSlot";
 
 export class Storage extends React.Component<Props, State> {
@@ -16,7 +16,7 @@ export class Storage extends React.Component<Props, State> {
 
 	private renderSlots() {
 		const slots = [];
-		const flowers = this.props.flowers;
+		const specimen = this.props.specimens;
 		for (let i = 0; i < this.props.size; i++) {
 			slots.push(
 				<div
@@ -24,7 +24,7 @@ export class Storage extends React.Component<Props, State> {
 					key={i}
 				>
 					<FlowerSlot
-						flower={flowers.length > i ? flowers[i] : null}
+						flower={specimen.length > i ? specimen[i] : null}
 						onClick={this.slotClickHandler(i)}
 					/>
 				</div>
@@ -51,7 +51,7 @@ export class Storage extends React.Component<Props, State> {
 
 interface Props {
 	size: number;
-	flowers: Flower[];
+	specimens: Specimen[];
 	selectedSlot?: number;
 
 	onSelectSlot?: (id: number) => void;

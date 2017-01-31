@@ -1,15 +1,12 @@
 import * as React from "react";
 
 interface FlowerProps {
-	petalCount?: number;
+	petalColors: string[];
 	style?: any;
-	color?: string;
 }
 
 export class FlowerSVG extends React.Component<FlowerProps, State> {
-	protected static defaultProps: FlowerProps = {
-		petalCount: 5
-	};
+	protected static defaultProps = {};
 
 	constructor(props: FlowerProps, context: any) {
 		super(props, context);
@@ -35,10 +32,11 @@ export class FlowerSVG extends React.Component<FlowerProps, State> {
 	private renderPetals() {
 		let petals = [];
 		let path = this.petalPath();
-		for (let i = 0; i < this.props.petalCount; i++) {
-			const turn = i / this.props.petalCount;
+		const petalCount = this.props.petalColors.length;
+		for (let i = 0; i < petalCount; i++) {
+			const turn = i / petalCount;
 			let petalStyle = {
-				fill: this.props.color,
+				fill: this.props.petalColors[i],
 				transform: "rotate(" + turn + "turn)"
 			};
 			petals.push(<path key={i} d={path} style={petalStyle}/>);
@@ -79,7 +77,7 @@ export class FlowerSVG extends React.Component<FlowerProps, State> {
 	}
 
 	private renderHelperElements() {
-		if(!this.state.debug) return null;
+		if (!this.state.debug) return null;
 		const P = this.calculatePoints();
 		return (
 			<g>
@@ -108,7 +106,7 @@ export class FlowerSVG extends React.Component<FlowerProps, State> {
 	}
 
 	private radialPoint(part, radius = 100) {
-		const rad = Math.PI * part * 4 / this.props.petalCount;
+		const rad = Math.PI * part * 4 / this.props.petalColors.length;
 		return {x: radius * Math.sin(rad), y: radius * Math.cos(rad)};
 	}
 }

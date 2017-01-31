@@ -34,7 +34,7 @@ export class Incubators extends React.Component<Props, State> {
 			};
 		}
 		return this.incubatorClickHandlers[i];
-	}
+	};
 
 	private incubatorClick = (i: number, slot: slotName) => {
 		if (this.props.onIncubatorSlotClick) this.props.onIncubatorSlotClick(i, slot);

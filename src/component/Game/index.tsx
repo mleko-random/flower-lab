@@ -1,18 +1,26 @@
 import * as React from "react";
 import {replace, without} from "typescript-array-utils";
-import {mergeNested} from "typescript-object-utils/src/mergeNested";
-
-import {Flower} from "../../model/Flower";
+import {mergeDeep} from "typescript-object-utils";
 import {Incubator, slotName} from "../../model/Incubator";
+import {Specimen} from "../../model/Specimen/index";
 import {Incubators} from "../Incubators";
 import {Storage} from "../Storage";
 
 export class Game extends React.Component<void, State> {
 
+	private static newRandomSpecimen(geneLength: number = 1): Specimen {
+		const gene: number[] = [];
+		for (let i = 0; i < geneLength; i++) {
+			gene.push(Math.floor(Math.random() * Math.pow(2, 32)));
+		}
+
+		return {gene};
+	}
+
 	constructor(props: void, context: any) {
 		super(props, context);
 		this.state = {
-			flowers: [],
+			specimens: [],
 			storageSize: 6,
 			selectedStorageSlot: null,
 			incubators: [{slots: {}}, {slots: {}}]
@@ -28,7 +36,7 @@ export class Game extends React.Component<void, State> {
 				/>
 				<Storage
 					size={this.state.storageSize}
-					flowers={this.state.flowers}
+					specimens={this.state.specimens}
 					selectedSlot={this.state.selectedStorageSlot}
 					onSelectSlot={this.selectStorageSlot}
 				/>
@@ -38,37 +46,33 @@ export class Game extends React.Component<void, State> {
 	}
 
 	private addFlower = () => {
-		if (this.state.storageSize <= this.state.flowers.length)return;
+		if (this.state.storageSize <= this.state.specimens.length)return;
 
-		const colors = [
-			"white", "blue", "red", "yellow", "green"
-		];
-
-		const newFlower: Flower = {color: colors[Math.floor(Math.random() * colors.length)]};
-		this.setState({flowers: this.state.flowers.concat(newFlower)});
-	}
+		const newSpecimen: Specimen = Game.newRandomSpecimen();
+		this.setState({specimens: this.state.specimens.concat(newSpecimen)});
+	};
 
 	private selectStorageSlot = (id: number) => {
 		this.setState({selectedStorageSlot: id});
-	}
+	};
 
 	private incubatorSlotClick = (incubatorId: number, slot: slotName) => {
 		let state = this.state;
 		let selectedStorageSlot = state.selectedStorageSlot;
-		if (selectedStorageSlot != null && state.flowers[selectedStorageSlot]) {
-			const flower = state.flowers[selectedStorageSlot];
+		if (selectedStorageSlot != null && state.specimens[selectedStorageSlot]) {
+			const flower = state.specimens[selectedStorageSlot];
 			const incubators = state.incubators;
 
 			let selectedIncubator = incubators[incubatorId];
 			let flowerInSelectedSlot = selectedIncubator.slots[slot];
 
-			let updatedStorage = without(state.flowers, selectedStorageSlot);
+			let updatedStorage = without(state.specimens, selectedStorageSlot);
 			if (flowerInSelectedSlot) {
 				updatedStorage = updatedStorage.concat(flowerInSelectedSlot);
 			}
 			this.setState({
-				incubators: replace(incubators, incubatorId, mergeNested(selectedIncubator, {slots: {[slot]: flower}})),
-				flowers: updatedStorage
+				incubators: replace(incubators, incubatorId, mergeDeep(selectedIncubator, {slots: {[slot]: flower}})),
+				specimens: updatedStorage
 			});
 		}
 	}
@@ -77,7 +81,7 @@ export class Game extends React.Component<void, State> {
 interface State {
 	incubators?: Incubator[];
 
-	flowers?: Flower[];
+	specimens?: Specimen[];
 	storageSize?: number;
 	selectedStorageSlot?: number;
 }
