@@ -17,11 +17,25 @@ export class Game extends React.Component<void, State> {
 		return {gene};
 	}
 
+	private static reproduce(a: Specimen, b: Specimen): Specimen {
+		let geneLength = a.gene.length;
+		const crossMap = Game.newRandomSpecimen(geneLength);
+		const gene = [];
+		for (let i = 0; i < geneLength; i++) {
+			// tslint:disable:no-bitwise
+			let aPart = (a.gene[i] & crossMap.gene[i]);
+			let bPart = (b.gene[i] & (~crossMap.gene[i]));
+			gene.push(aPart | bPart);
+			// tslint:enable:no-bitwise
+		}
+		return {gene};
+	}
+
 	constructor(props: void, context: any) {
 		super(props, context);
 		this.state = {
 			specimens: [],
-			storageSize: 6,
+			storageSize: 20,
 			selectedStorageSlot: null,
 			incubators: [{slots: {}}, {slots: {}}]
 		};
@@ -40,16 +54,30 @@ export class Game extends React.Component<void, State> {
 					selectedSlot={this.state.selectedStorageSlot}
 					onSelectSlot={this.selectStorageSlot}
 				/>
-				<button onClick={this.addFlower}>Add flower</button>
+				<button onClick={this.newFlower}>Add flower</button>
+				<button onClick={this.breed}>Breed</button>
 			</div>
 		);
 	}
 
-	private addFlower = () => {
+	private addSpecimens = (newSpecimen: Specimen[]) => {
 		if (this.state.storageSize <= this.state.specimens.length)return;
+		this.setState({specimens: this.state.specimens.concat(newSpecimen.slice(0, this.state.storageSize - this.state.specimens.length))});
+	};
 
-		const newSpecimen: Specimen = Game.newRandomSpecimen();
-		this.setState({specimens: this.state.specimens.concat(newSpecimen)});
+	private newFlower = () => {
+		this.addSpecimens([Game.newRandomSpecimen()]);
+	};
+
+	private breed = () => {
+		const newSpecimens = [];
+		for (let incubator of this.state.incubators) {
+			if (incubator.slots.A && incubator.slots.B) {
+				let newSpecimen = Game.reproduce(incubator.slots.A, incubator.slots.B);
+				newSpecimens.push(newSpecimen);
+			}
+		}
+		this.addSpecimens(newSpecimens);
 	};
 
 	private selectStorageSlot = (id: number) => {
