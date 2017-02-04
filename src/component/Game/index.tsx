@@ -1,35 +1,16 @@
 import * as React from "react";
 import {replace, without} from "typescript-array-utils";
 import {mergeDeep} from "typescript-object-utils";
+import {EvolutionRule} from "../../model/EvolutionRule";
+import {FlowerEvolutionRule} from "../../model/Flower/FlowerEvolutionRule";
 import {Incubator, slotName} from "../../model/Incubator";
-import {Specimen} from "../../model/Specimen/index";
+import {Specimen} from "../../model/Specimen";
 import {Incubators} from "../Incubators";
 import {Storage} from "../Storage";
 
 export class Game extends React.Component<void, State> {
 
-	private static newRandomSpecimen(geneLength: number = 1): Specimen {
-		const gene: number[] = [];
-		for (let i = 0; i < geneLength; i++) {
-			gene.push(Math.floor(Math.random() * Math.pow(2, 32)));
-		}
-
-		return {gene};
-	}
-
-	private static reproduce(a: Specimen, b: Specimen): Specimen {
-		let geneLength = a.gene.length;
-		const crossMap = Game.newRandomSpecimen(geneLength);
-		const gene = [];
-		for (let i = 0; i < geneLength; i++) {
-			// tslint:disable:no-bitwise
-			let aPart = (a.gene[i] & crossMap.gene[i]);
-			let bPart = (b.gene[i] & (~crossMap.gene[i]));
-			gene.push(aPart | bPart);
-			// tslint:enable:no-bitwise
-		}
-		return {gene};
-	}
+	private rule: EvolutionRule;
 
 	constructor(props: void, context: any) {
 		super(props, context);
@@ -39,6 +20,7 @@ export class Game extends React.Component<void, State> {
 			selectedStorageSlot: null,
 			incubators: [{slots: {}}, {slots: {}}]
 		};
+		this.rule = new FlowerEvolutionRule();
 	}
 
 	public render(): JSX.Element {
@@ -66,14 +48,14 @@ export class Game extends React.Component<void, State> {
 	};
 
 	private newFlower = () => {
-		this.addSpecimens([Game.newRandomSpecimen()]);
+		this.addSpecimens([this.rule.newSpecimen()]);
 	};
 
 	private breed = () => {
 		const newSpecimens = [];
 		for (let incubator of this.state.incubators) {
 			if (incubator.slots.A && incubator.slots.B) {
-				let newSpecimen = Game.reproduce(incubator.slots.A, incubator.slots.B);
+				let newSpecimen = this.rule.reproduce(incubator.slots.A, incubator.slots.B);
 				newSpecimens.push(newSpecimen);
 			}
 		}
