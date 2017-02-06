@@ -1,7 +1,8 @@
 import {Specimen} from "../Specimen";
-export interface EvolutionRule {
+export interface GameRules {
 	newSpecimen(): Specimen;
 	reproduce(a: Specimen, b: Specimen): Specimen;
+	value(a: Specimen): number;
 }
 
 export function randomGene(geneLength: number = 1): number[] {

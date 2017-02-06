@@ -1,8 +1,8 @@
 import * as React from "react";
 import {replace, without} from "typescript-array-utils";
 import {mergeDeep} from "typescript-object-utils";
-import {EvolutionRule} from "../../model/EvolutionRule";
 import {FlowerEvolutionRule} from "../../model/Flower/FlowerEvolutionRule";
+import {GameRules} from "../../model/GameRules";
 import {Incubator, slotName} from "../../model/Incubator";
 import {Specimen} from "../../model/Specimen";
 import {Incubators} from "../Incubators";
@@ -10,15 +10,16 @@ import {Storage} from "../Storage";
 
 export class Game extends React.Component<void, State> {
 
-	private rule: EvolutionRule;
+	private rule: GameRules;
 
 	constructor(props: void, context: any) {
 		super(props, context);
 		this.state = {
 			specimens: [],
-			storageSize: 20,
+			storageSize: 10,
 			selectedStorageSlot: null,
-			incubators: [{slots: {}}, {slots: {}}]
+			incubators: [{slots: {}}, {slots: {}}],
+			money: 0
 		};
 		this.rule = new FlowerEvolutionRule();
 	}
@@ -38,6 +39,8 @@ export class Game extends React.Component<void, State> {
 				/>
 				<button onClick={this.newFlower}>Add flower</button>
 				<button onClick={this.breed}>Breed</button>
+				<button onClick={this.sellSelected}>Sell selected</button>
+				<div>Money: {this.state.money}</div>
 			</div>
 		);
 	}
@@ -85,6 +88,20 @@ export class Game extends React.Component<void, State> {
 				specimens: updatedStorage
 			});
 		}
+	};
+
+	private sellSelected = () => {
+		let state = this.state;
+		let selectedStorageSlot = state.selectedStorageSlot;
+		if (selectedStorageSlot != null && state.specimens[selectedStorageSlot]) {
+			const selectedSpecimen = state.specimens[selectedStorageSlot];
+			const updatedStorage = without(state.specimens, selectedStorageSlot);
+			const value = this.rule.value(selectedSpecimen);
+			this.setState({
+				specimens: updatedStorage,
+				money: state.money + value
+			});
+		}
 	}
 }
 
@@ -94,4 +111,6 @@ interface State {
 	specimens?: Specimen[];
 	storageSize?: number;
 	selectedStorageSlot?: number;
+
+	money?: number;
 }

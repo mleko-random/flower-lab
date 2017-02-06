@@ -1,13 +1,23 @@
-import {EvolutionRule, randomGene} from "../EvolutionRule/index";
+import {GameRules, randomGene} from "../GameRules/index";
 import {Specimen} from "../Specimen/index";
 
 const geneLength = 1;
 const mutationChance = 0.1;
 
-export class FlowerEvolutionRule implements EvolutionRule {
+export class FlowerEvolutionRule implements GameRules {
+	public value(a: Specimen): number {
+		let value = 1;
+		for (let i = 0; i < 4; i++) {
+			// tslint:disable-next-line:no-bitwise
+			if (a.gene[0] & (0x01 << i)) {
+				value++;
+			}
+		}
+		return value;
+	}
 
 	public newSpecimen(): Specimen {
-		const gene = randomGene(geneLength);
+		const gene = Array.from({length: geneLength}, () => 0);
 		return {gene};
 	}
 
