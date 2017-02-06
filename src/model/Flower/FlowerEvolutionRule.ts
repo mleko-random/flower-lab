@@ -39,7 +39,7 @@ export class FlowerEvolutionRule implements GameRules {
 			return a;
 		}
 		// tslint:disable-next-line:no-bitwise
-		const mutationMap = 0x01 << (Math.ceil(Math.random() * 4));
+		const mutationMap = 0x01 << (Math.floor(Math.random() * 4));
 		// tslint:disable-next-line:no-bitwise
 		return {gene: [a.gene[0] ^ mutationMap]};
 	}
