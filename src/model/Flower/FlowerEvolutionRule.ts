@@ -22,6 +22,11 @@ export class FlowerEvolutionRule implements GameRules {
 	}
 
 	public reproduce(a: Specimen, b: Specimen): Specimen {
+		let child = this.crossOver(a, b);
+		return this.mutate(child);
+	}
+
+	private crossOver(a: Specimen, b: Specimen): Specimen {
 		const crossMap = randomGene(geneLength);
 		const gene = [];
 		for (let i = 0; i < geneLength; i++) {
@@ -31,7 +36,7 @@ export class FlowerEvolutionRule implements GameRules {
 			gene.push(aPart | bPart);
 			// tslint:enable:no-bitwise
 		}
-		return this.mutate({gene});
+		return {gene};
 	}
 
 	private mutate(a: Specimen): Specimen {
