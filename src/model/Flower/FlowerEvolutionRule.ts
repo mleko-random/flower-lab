@@ -1,5 +1,5 @@
 import {GameRules, randomGene} from "../GameRules/index";
-import {Specimen} from "../Specimen/index";
+import {Specimen} from "../Specimen";
 
 const geneLength = 1;
 const mutationChance = 0.1;

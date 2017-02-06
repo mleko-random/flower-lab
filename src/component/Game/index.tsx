@@ -40,6 +40,14 @@ export class Game extends React.Component<void, State> {
 				<button onClick={this.newFlower}>Add flower</button>
 				<button onClick={this.breed}>Breed</button>
 				<button onClick={this.sellSelected}>Sell selected</button>
+				<div>
+					<button onClick={this.buyStorageSlot} disabled={this.nextSlotPrice() > this.state.money}>
+						Buy storage slot [{this.nextSlotPrice()}]
+					</button>
+					<button onClick={this.buyIncubator} disabled={this.nextIncubatorPrice() > this.state.money}>
+						Buy incubator [{this.nextIncubatorPrice()}]
+					</button>
+				</div>
 				<div>Money: {this.state.money}</div>
 			</div>
 		);
@@ -102,7 +110,35 @@ export class Game extends React.Component<void, State> {
 				money: state.money + value
 			});
 		}
-	}
+	};
+
+	private buyStorageSlot = () => {
+		let nextSlotPrice = this.nextSlotPrice();
+		if (nextSlotPrice <= this.state.money) {
+			this.setState({
+				storageSize: this.state.storageSize + 1,
+				money: this.state.money - nextSlotPrice
+			});
+		}
+	};
+
+	private nextSlotPrice = () => {
+		return Math.round(19 + 5 * Math.pow(1.2, this.state.storageSize));
+	};
+
+	private buyIncubator = () => {
+		let nextIncubatorPrice = this.nextIncubatorPrice();
+		if (nextIncubatorPrice <= this.state.money) {
+			this.setState({
+				incubators: this.state.incubators.concat({slots: []}),
+				money: this.state.money - nextIncubatorPrice
+			});
+		}
+	};
+
+	private nextIncubatorPrice = () => {
+		return Math.round(44 + 25 * Math.pow(1.5, this.state.incubators.length));
+	};
 }
 
 interface State {
