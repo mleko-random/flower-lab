@@ -1,10 +1,15 @@
 import {GameRules, randomGene} from "../GameRules/index";
 import {Specimen} from "../Specimen";
+import {Random} from "../Random/index";
+import {nativeRandom} from "../Random/NativeRandom";
 
 const geneLength = 1;
 const mutationChance = 0.1;
 
 export class FlowerEvolutionRule implements GameRules {
+
+	public constructor(private random: Random = nativeRandom) {
+	}
 
 	private static tierUp(a: Specimen): Specimen {
 		const g = a.gene[0];
@@ -36,8 +41,8 @@ export class FlowerEvolutionRule implements GameRules {
 		return FlowerEvolutionRule.tierUp(this.mutate(child));
 	}
 
-	private crossOver(a: Specimen, b: Specimen): Specimen {
-		const crossMap = randomGene(geneLength);
+	public crossOver(a: Specimen, b: Specimen): Specimen {
+		const crossMap = randomGene(geneLength, this.random);
 		const gene = [];
 		for (let i = 0; i < geneLength; i++) {
 			// tslint:disable:no-bitwise
@@ -50,12 +55,12 @@ export class FlowerEvolutionRule implements GameRules {
 		return {gene};
 	}
 
-	private mutate(a: Specimen): Specimen {
-		if (Math.random() > mutationChance) {
+	public mutate(a: Specimen): Specimen {
+		if (this.random.nextInt(100) / 100 > mutationChance) {
 			return a;
 		}
 		// tslint:disable-next-line:no-bitwise
-		const mutationMap = 0x01 << (Math.floor(Math.random() * 4));
+		const mutationMap = 0x01 << this.random.nextInt(4);
 		// tslint:disable-next-line:no-bitwise
 		return {gene: [a.gene[0] ^ mutationMap, a.gene[1]]};
 	}
