@@ -40,6 +40,7 @@ export class Game extends React.Component<void, State> {
 				<button onClick={this.newFlower}>Add flower</button>
 				<button onClick={this.breed}>Breed</button>
 				<button onClick={this.sellSelected}>Sell selected</button>
+				<button onClick={this.sellAll}>Sell all</button>
 				<div>
 					<button onClick={this.buyStorageSlot} disabled={this.nextSlotPrice() > this.state.money}>
 						Buy storage slot [{this.nextSlotPrice()}]
@@ -110,6 +111,13 @@ export class Game extends React.Component<void, State> {
 				money: state.money + value
 			});
 		}
+	};
+
+	private sellAll = () => {
+		this.setState({
+			specimens: [],
+			money: this.state.specimens.map((s) => this.rule.value(s)).reduce((p, c) => p + c, this.state.money)
+		});
 	};
 
 	private buyStorageSlot = () => {

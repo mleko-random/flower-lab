@@ -1,15 +1,12 @@
 import {GameRules, randomGene} from "../GameRules/index";
-import {Specimen} from "../Specimen";
-import {Random} from "../Random/index";
+import {Random} from "../Random";
 import {nativeRandom} from "../Random/NativeRandom";
+import {Specimen} from "../Specimen";
 
 const geneLength = 1;
 const mutationChance = 0.1;
 
 export class FlowerEvolutionRule implements GameRules {
-
-	public constructor(private random: Random = nativeRandom) {
-	}
 
 	private static tierUp(a: Specimen): Specimen {
 		const g = a.gene[0];
@@ -18,6 +15,9 @@ export class FlowerEvolutionRule implements GameRules {
 			return {gene: [0x00, a.gene[1] + 1]};
 		}
 		return a;
+	}
+
+	public constructor(private random: Random = nativeRandom) {
 	}
 
 	public value(a: Specimen): number {
