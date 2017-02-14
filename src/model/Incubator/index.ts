@@ -4,6 +4,7 @@ export interface Incubator {
 		A?: Specimen;
 		B?: Specimen;
 	};
+	progress: number;
 }
 
 export type slotName = "A"|"B";

@@ -1,6 +1,7 @@
 import * as React from "react";
 import {replace, without} from "typescript-array-utils";
-import {mergeDeep} from "typescript-object-utils";
+import {merge, mergeDeep} from "typescript-object-utils";
+//
 import {Game} from "../../component/Game";
 import {FlowerEvolutionRule} from "../../model/Flower/FlowerEvolutionRule";
 import {GameRules} from "../../model/GameRules";
@@ -8,6 +9,7 @@ import {Incubator, slotName} from "../../model/Incubator";
 import {Specimen} from "../../model/Specimen";
 
 const rules: GameRules = new FlowerEvolutionRule();
+const incubationTime = 5;
 
 export class GameContainer extends React.Component<void, State> {
 
@@ -18,7 +20,8 @@ export class GameContainer extends React.Component<void, State> {
 			storageSize: 10,
 			selectedStorageSlot: null,
 			incubators: [{slots: {}, progress: 0}, {slots: {}, progress: 0}],
-			money: 0
+			money: 0,
+			time: Date.now()
 		};
 	}
 
@@ -47,13 +50,40 @@ export class GameContainer extends React.Component<void, State> {
 		);
 	}
 
-	private addSpecimens = (newSpecimen: Specimen[]) => {
-		if (this.state.storageSize <= this.state.specimens.length)return;
-		this.setState({specimens: this.state.specimens.concat(newSpecimen.slice(0, this.state.storageSize - this.state.specimens.length))});
+	public componentDidMount() {
+		this.tick();
+	}
+
+	private tick = () => {
+		const time = Date.now();
+		const diff = time - this.state.time;
+		const incubationProgress = diff / 1000 / incubationTime;
+		const newSpecimens = [];
+
+		let incubators = [];
+		for (let incubator of this.state.incubators) {
+			if (incubator.slots.A && incubator.slots.B) {
+				if (incubator.progress + incubationProgress >= 1) {
+					let newSpecimen = rules.reproduce(incubator.slots.A, incubator.slots.B);
+					newSpecimens.push(newSpecimen);
+				}
+				incubators.push(merge(incubator, {progress: (incubator.progress + incubationProgress) % 1}));
+			} else {
+				incubators.push(incubator);
+			}
+		}
+		const specimens = newSpecimens.length == 0 ? this.state.specimens : this.addSpecimens(newSpecimens);
+		this.setState({incubators, time, specimens});
+		requestAnimationFrame(this.tick);
+	};
+
+	private addSpecimens = (newSpecimen: Specimen[]): Specimen[] => {
+		if (this.state.storageSize <= this.state.specimens.length)return this.state.specimens;
+		return this.state.specimens.concat(newSpecimen.slice(0, this.state.storageSize - this.state.specimens.length));
 	};
 
 	private newFlower = () => {
-		this.addSpecimens([rules.newSpecimen()]);
+		this.setState({specimens: this.addSpecimens([rules.newSpecimen()])});
 	};
 
 	private breed = () => {
@@ -64,7 +94,7 @@ export class GameContainer extends React.Component<void, State> {
 				newSpecimens.push(newSpecimen);
 			}
 		}
-		this.addSpecimens(newSpecimens);
+		this.setState({specimens: this.addSpecimens(newSpecimens)});
 	};
 
 	private selectStorageSlot = (id: number) => {
@@ -150,4 +180,6 @@ interface State {
 	selectedStorageSlot?: number;
 
 	money?: number;
+
+	time?: number;
 }
