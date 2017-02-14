@@ -2,7 +2,7 @@ import * as React from "react";
 import {Incubator as IncubatorModel, slotName} from "../../model/Incubator";
 import {Incubator} from "../Incubator";
 
-export class Incubators extends React.Component<Props, State> {
+export class Incubators extends React.PureComponent<Props, void> {
 
 	private incubatorClickHandlers = [];
 
@@ -45,7 +45,4 @@ interface Props {
 	incubators: IncubatorModel[];
 
 	onIncubatorSlotClick?: (i: number, slot: slotName) => void;
-}
-interface State {
-
 }

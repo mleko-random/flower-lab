@@ -2,7 +2,7 @@ import * as React from "react";
 import {Specimen} from "../../model/Specimen";
 import {FlowerSlot} from "../FlowerSlot";
 
-export class Storage extends React.Component<Props, State> {
+export class Storage extends React.PureComponent<Props, void> {
 
 	private slotClickHandlers = [];
 
@@ -55,7 +55,4 @@ interface Props {
 	selectedSlot?: number;
 
 	onSelectSlot?: (id: number) => void;
-}
-interface State {
-
 }

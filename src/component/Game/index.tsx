@@ -4,7 +4,7 @@ import {Specimen} from "../../model/Specimen";
 import {Incubators} from "../Incubators";
 import {Storage} from "../Storage";
 
-export class Game extends React.Component<Props & ActionProps, void> {
+export class Game extends React.PureComponent<Props & ActionProps, void> {
 
 	public render(): JSX.Element {
 		const p = this.props;
