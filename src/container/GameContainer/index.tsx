@@ -116,7 +116,7 @@ export class GameContainer extends React.Component<void, State> {
 				updatedStorage = updatedStorage.concat(flowerInSelectedSlot);
 			}
 			this.setState({
-				incubators: replace(incubators, incubatorId, mergeDeep(selectedIncubator, {slots: {[slot]: flower}})),
+				incubators: replace(incubators, incubatorId, mergeDeep(selectedIncubator, {slots: {[slot]: flower}, progress: 0})),
 				specimens: updatedStorage
 			});
 		}
