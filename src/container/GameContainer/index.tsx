@@ -35,8 +35,8 @@ export class GameContainer extends React.Component<void, State> {
 				selectedStorageSlot={s.selectedStorageSlot}
 				money={s.money}
 
-				nextSlotPrice={this.nextSlotPrice()}
-				nextIncubatorPrice={this.nextIncubatorPrice()}
+				nextSlotPrice={rules.nextStorageSlotPrice(this.state.storageSize)}
+				nextIncubatorPrice={rules.nextIncubatorPrice(this.state.incubators.length)}
 
 				onAddNewFlower={this.newFlower}
 				onIncubatorSlotClick={this.incubatorSlotClick}
@@ -116,7 +116,10 @@ export class GameContainer extends React.Component<void, State> {
 				updatedStorage = updatedStorage.concat(flowerInSelectedSlot);
 			}
 			this.setState({
-				incubators: replace(incubators, incubatorId, mergeDeep(selectedIncubator, {slots: {[slot]: flower}, progress: 0})),
+				incubators: replace(incubators, incubatorId, mergeDeep(selectedIncubator, {
+					slots: {[slot]: flower},
+					progress: 0
+				})),
 				specimens: updatedStorage
 			});
 		}
@@ -144,7 +147,7 @@ export class GameContainer extends React.Component<void, State> {
 	};
 
 	private buyStorageSlot = () => {
-		let nextSlotPrice = this.nextSlotPrice();
+		const nextSlotPrice = rules.nextStorageSlotPrice(this.state.storageSize);
 		if (nextSlotPrice <= this.state.money) {
 			this.setState({
 				storageSize: this.state.storageSize + 1,
@@ -153,22 +156,14 @@ export class GameContainer extends React.Component<void, State> {
 		}
 	};
 
-	private nextSlotPrice = () => {
-		return Math.round(19 + 5 * Math.pow(1.2, this.state.storageSize));
-	};
-
 	private buyIncubator = () => {
-		let nextIncubatorPrice = this.nextIncubatorPrice();
+		const nextIncubatorPrice = rules.nextIncubatorPrice(this.state.incubators.length);
 		if (nextIncubatorPrice <= this.state.money) {
 			this.setState({
 				incubators: this.state.incubators.concat({slots: [], progress: 0}),
 				money: this.state.money - nextIncubatorPrice
 			});
 		}
-	};
-
-	private nextIncubatorPrice = () => {
-		return Math.round(44 + 25 * Math.pow(1.5, this.state.incubators.length));
 	};
 }
 

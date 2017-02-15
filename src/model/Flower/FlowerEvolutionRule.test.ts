@@ -33,3 +33,18 @@ tape("test mutation", (t) => {
 
 	t.end();
 });
+
+tape("test flower value", (t) => {
+	const rule = new FlowerEvolutionRule();
+
+	t.equals(rule.value({gene: [0x00, 0x00]}), 1);
+	t.equals(rule.value({gene: [0x01, 0x00]}), 2);
+	t.equals(rule.value({gene: [0x02, 0x00]}), 2);
+	t.equals(rule.value({gene: [0x03, 0x00]}), 3);
+	t.equals(rule.value({gene: [0x00, 0x01]}), 4);
+	t.equals(rule.value({gene: [0x01, 0x01]}), 5);
+	t.equals(rule.value({gene: [0x00, 0x02]}), 16);
+	t.equals(rule.value({gene: [0x01, 0x02]}), 19);
+
+	t.end();
+});

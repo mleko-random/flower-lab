@@ -7,6 +7,8 @@ export interface GameRules {
 	newSpecimen(): Specimen;
 	reproduce(a: Specimen, b: Specimen): Specimen;
 	value(a: Specimen): number;
+	nextStorageSlotPrice(storageSize: number): number;
+	nextIncubatorPrice(incubatorCount: number): number;
 }
 
 const twoPowThirtyTwo = Math.pow(2, 32);

@@ -21,14 +21,15 @@ export class FlowerEvolutionRule implements GameRules {
 	}
 
 	public value(a: Specimen): number {
-		let value = 1;
+		let value = 0;
+		const tierValue = Math.pow(4, a.gene[1]);
 		for (let i = 0; i < 4; i++) {
 			// tslint:disable-next-line:no-bitwise
 			if (a.gene[0] & (0x01 << i)) {
-				value++;
+				value += Math.ceil(tierValue / 7);
 			}
 		}
-		return value;
+		return tierValue + value;
 	}
 
 	public newSpecimen(): Specimen {
@@ -65,4 +66,11 @@ export class FlowerEvolutionRule implements GameRules {
 		return {gene: [a.gene[0] ^ mutationMap, a.gene[1]]};
 	}
 
+	public nextStorageSlotPrice = (storageSize: number) => {
+		return Math.round(4 * Math.pow(5, storageSize - 8));
+	};
+
+	public nextIncubatorPrice = (incubatorCount: number) => {
+		return Math.round(25 + 15 * Math.pow(15, incubatorCount - 1));
+	};
 }
